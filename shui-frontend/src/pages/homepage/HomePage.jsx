@@ -3,8 +3,10 @@ import Header from '../../components/header/Header';
 import Button from '../../components/button/Button';
 import MessageFlow from '../../components/messageflow/MessageFlow';
 import { messages } from '../../data/messages';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+    const navigate = useNavigate();
     return (
         <section className="page homepage">
             <Header />
@@ -16,7 +18,7 @@ const HomePage = () => {
                     <Button 
                         text="Nytt meddelande"
                         type="default"
-                        onClick={ () => console.log('Nytt meddelande') }
+                        onClick={ () => navigate('/message/create') }
                     />
                 </section>
                 <MessageFlow messages={ messages } />

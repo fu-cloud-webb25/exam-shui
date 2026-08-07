@@ -68,6 +68,19 @@ p {
 .page {
   width: 100%;
   min-height: 100vh;
+
+  .page__title {
+
+  }
+
+  .page__form-container {
+    padding: 1rem;
+    border-radius: 15px;
+    border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
 
 .wrapper {

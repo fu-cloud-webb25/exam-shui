@@ -1,7 +1,10 @@
 import './index.css';
-import { PencilIcon, TrashIcon } from '@phosphor-icons/react';
+import { NotePencilIcon, TrashIcon } from '@phosphor-icons/react';
+import { useNavigate } from 'react-router-dom';
 
 const Message = ({ message }) => {
+    const navigate = useNavigate(); 
+
     return (
         <article className="message">
             <h3 className="message__initials">
@@ -18,14 +21,16 @@ const Message = ({ message }) => {
                 </p>
             </div>
             <div className="message__icon-group">
-                <PencilIcon 
+                <NotePencilIcon 
+                    className="icon icon--pencil"
                     size={20}
-                    weight="regular"
-                    color="blue"
+                    weight="bold"
+                    onClick={ () => navigate(`/message/edit/${message.id}`) }
                 />
                 <TrashIcon 
+                    className="icon icon--trash"
                     size={20}
-                    weight="regular"
+                    weight="bold"
                     color="red"
                 />
             </div>
@@ -33,4 +38,4 @@ const Message = ({ message }) => {
     )
 }
 
-export default Message
+export default Message;
