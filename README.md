@@ -81,7 +81,7 @@ Exempel:
 
 # Funktionella krav
 
-## Hämta meddelanden
+## Hämta alla meddelanden
 
 Det ska gå att hämta och visa samtliga meddelanden från databasen.
 
@@ -92,6 +92,30 @@ Exempel:
 ```http
 GET /messages
 ```
+
+---
+
+## Hämta meddelanden från en användare
+
+API:t ska även kunna hämta samtliga meddelanden som publicerats av ett specifikt användarnamn.
+
+Du bestämmer själv hur endpointen utformas.
+
+Exempel:
+
+```http
+GET /messages?username=jeppan6y
+```
+
+eller:
+
+```http
+GET /users/jeppan6y/messages
+```
+
+Det viktiga är att filtreringen sker genom ditt API och din databaslösning.
+
+Du behöver på G-nivå **inte** skapa en separat sida i frontend för detta, men API:t ska stödja funktionaliteten.
 
 ---
 
@@ -166,12 +190,13 @@ Du bestämmer själv exakt hur ditt API struktureras.
 
 En möjlig struktur är:
 
-| Method   | Endpoint         | Beskrivning              |
-| -------- | ---------------- | ------------------------ |
-| `GET`    | `/messages`      | Hämta alla meddelanden   |
-| `POST`   | `/messages`      | Skapa ett meddelande     |
-| `PUT`    | `/messages/{id}` | Uppdatera ett meddelande |
-| `DELETE` | `/messages/{id}` | Ta bort ett meddelande   |
+| Method   | Endpoint                        | Beskrivning                         |
+| -------- | ------------------------------- | ----------------------------------- |
+| `GET`    | `/messages`                     | Hämta alla meddelanden              |
+| `GET`    | `/messages?username={username}` | Hämta meddelanden från en användare |
+| `POST`   | `/messages`                     | Skapa ett meddelande                |
+| `PUT`    | `/messages/{id}`                | Uppdatera ett meddelande            |
+| `DELETE` | `/messages/{id}`                | Ta bort ett meddelande              |
 
 Du får använda en annan struktur så länge samtliga funktionella krav är uppfyllda.
 
@@ -203,21 +228,81 @@ serverless.yml
 
 Alla meddelanden ska lagras persistent i DynamoDB.
 
-Fundera på vilka access patterns som behövs för applikationen, exempelvis:
+Databasdesignen ska utgå från applikationens **Access Patterns**.
+
+Du behöver bland annat kunna lösa:
 
 ```text
-Skapa ett meddelande
+AP1: Skapa ett meddelande
 
-Hämta alla meddelanden
+AP2: Hämta alla meddelanden
 
-Hämta ett meddelande via ID
+AP3: Hämta alla meddelanden från en specifik användare
 
-Uppdatera ett meddelande
+AP4: Hämta ett specifikt meddelande
 
-Ta bort ett meddelande
+AP5: Uppdatera ett meddelande
+
+AP6: Ta bort ett meddelande
 ```
 
-Databasdesignen ska utgå från applikationens access patterns. Ni uppmuntras att använda single-table design där det är lämpligt, men ni ansvarar själva för att välja och motivera er nyckelstruktur.
+Fundera på vilka kombinationer av:
+
+```text
+Partition Key
+Sort Key
+```
+
+som gör det möjligt att lösa dessa frågor effektivt.
+
+Det är tillåtet och uppmuntrat att använda **single-table design** där det är lämpligt.
+
+Om din primära nyckelstruktur inte effektivt kan lösa samtliga Access Patterns kan du även använda exempelvis ett:
+
+```text
+Global Secondary Index (GSI)
+```
+
+Du ansvarar själv för att välja och motivera din nyckelstruktur.
+
+> Undvik att utgå från hur datan "ser ut". Börja istället med vilka frågor applikationen behöver kunna ställa till databasen.
+
+---
+
+# DynamoDB-dokumentation
+
+I projektets README ska du kort dokumentera din databasdesign.
+
+Dokumentationen ska minst innehålla:
+
+## Access Patterns
+
+Exempel:
+
+```text
+Hämta alla meddelanden
+
+Hämta alla meddelanden från användare X
+
+Hämta ett meddelande via ID
+```
+
+## Key Design
+
+Beskriv hur dina viktigaste entities lagras.
+
+Exempel på format:
+
+| Entity  | PK    | SK    |
+| ------- | ----- | ----- |
+| Message | `...` | `...` |
+| User    | `...` | `...` |
+
+Om du använder ett GSI ska även dess nycklar dokumenteras.
+
+Du behöver inte skriva en lång rapport.
+
+Det viktiga är att det går att förstå **varför din DynamoDB-design ser ut som den gör**.
 
 ---
 
@@ -409,6 +494,7 @@ Projektets README ska innehålla:
 * länk till den deployade Shui-applikationen
 * API:ts base URL
 * dokumentation över dina endpoints
+* DynamoDB-design och Access Patterns
 * instruktioner för hur projektet startas lokalt
 
 API-dokumentationen ska innehålla:
@@ -433,10 +519,13 @@ För att få **Godkänt** ska:
 * befintlig kod vidareutvecklas på ett strukturerat sätt
 * samtliga funktionella krav vara implementerade
 * meddelanden kunna hämtas
+* meddelanden från en specifik användare kunna hämtas via API:t
 * nya meddelanden kunna publiceras
 * meddelanden kunna redigeras
 * meddelanden kunna tas bort
 * DynamoDB användas för persistent lagring
+* databasdesignen utgå från applikationens Access Patterns
+* DynamoDB-designen dokumenteras i README
 * Serverless Framework användas
 * API Gateway användas
 * AWS Lambda användas
@@ -456,22 +545,30 @@ För **Väl Godkänt** ska samtliga krav för Godkänt vara uppfyllda.
 
 Dessutom ska följande funktionalitet implementeras.
 
+---
+
 ## Sortering
 
-Användaren ska kunna sortera meddelanden efter datum.
-
-Exempel:
+Användaren ska kunna sortera meddelanden efter datum:
 
 ```text
 Nyast först
 Äldst först
 ```
 
+Sorteringen ska stödjas av ditt **API och din databasfråga**.
+
+Det räcker alltså inte att hämta samtliga meddelanden och därefter enbart använda JavaScripts `sort()` i frontend.
+
+Fundera på hur din Sort Key eller ett eventuellt index kan hjälpa dig att hämta datan i rätt ordning.
+
 ---
 
-## Meddelanden per användare
+## Meddelanden per användare i frontend
 
-Det ska gå att visa alla meddelanden från en specifik användare.
+API:t kan redan hämta meddelanden från en specifik användare.
+
+På VG-nivå ska denna funktionalitet även integreras i frontend-applikationen.
 
 Exempelvis kan användarnamnet:
 
@@ -487,16 +584,9 @@ Användaren kan då navigera till exempelvis:
 /users/jeppan6y
 ```
 
-och se alla meddelanden som publicerats av den användaren.
+och se samtliga meddelanden som publicerats av den användaren.
 
-Du väljer själv om filtreringen görs genom exempelvis:
-
-```text
-path parameter
-query parameter
-```
-
-men API:t ska användas för att hämta rätt data.
+Du väljer själv hur frontendens routing och struktur implementeras.
 
 ---
 
@@ -509,7 +599,18 @@ registrera användare
 logga in
 ```
 
-Lösenord ska lagras **hashade** och får aldrig sparas i klartext.
+En användare ska exempelvis kunna innehålla:
+
+```js
+{
+  id,
+  username,
+  email,
+  password
+}
+```
+
+Lösenordet ska lagras **hashat** och får aldrig sparas i klartext.
 
 Vid lyckad inloggning ska användaren få en:
 
@@ -517,9 +618,11 @@ Vid lyckad inloggning ska användaren få en:
 JWT
 ```
 
+JWT:n används därefter för att identifiera den inloggade användaren.
+
 ---
 
-## Authorization
+# Authorization
 
 När authentication implementerats ska funktionaliteten för meddelanden förändras.
 
@@ -537,6 +640,10 @@ redigera sina egna meddelanden
 ta bort sina egna meddelanden
 ```
 
+När ett meddelande skapas ska backend koppla meddelandet till den inloggade användaren.
+
+Klienten ska alltså inte själv kunna bestämma vilken användare ett meddelande tillhör genom att manipulera request body.
+
 En användare får **inte** kunna redigera eller ta bort någon annans meddelande.
 
 Frontend-applikationen ska anpassas efter detta.
@@ -552,7 +659,34 @@ endast visas där de är relevanta.
 
 Backend ska dock alltid kontrollera behörigheten.
 
-Det räcker alltså **inte** att endast gömma knappen i frontend.
+Det räcker alltså **inte** att endast gömma knappar i frontend.
+
+---
+
+# Utöka din DynamoDB-design
+
+När du implementerar användare får din DynamoDB-tabell ytterligare en typ av data.
+
+Fundera på hur:
+
+```text
+USER
+MESSAGE
+```
+
+ska kunna existera i samma databasdesign.
+
+Exempel på nya Access Patterns kan vara:
+
+```text
+Hämta användare via email
+
+Hämta användare via ID
+
+Hämta alla meddelanden från den inloggade användaren
+```
+
+Uppdatera DynamoDB-dokumentationen i README så att den även beskriver de delar du lagt till för VG.
 
 ---
 
