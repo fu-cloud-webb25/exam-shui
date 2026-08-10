@@ -1,6 +1,7 @@
 import './index.css';
 import { NotePencilIcon, TrashIcon } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../../utils';
 
 const Message = ({ message }) => {
     const navigate = useNavigate(); 
@@ -14,7 +15,7 @@ const Message = ({ message }) => {
             <div className="message__content">
                 <div className="message__content-top">
                     <h4 className="message__user">{ message.user.username }</h4>
-                    <p className="message__date">{ message.date }</p>
+                    <p className="message__date">{ formatDate(message.date) }</p>
                 </div>
                 <p className="message__text">
                     { message.text }
