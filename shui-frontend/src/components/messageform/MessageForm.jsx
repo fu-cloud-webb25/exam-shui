@@ -41,6 +41,11 @@ const MessageForm = ({ message = null }) => {
                 type="default"
                 onClick={ console.log('Spara meddelande') }
             />
+            <Button 
+                text="Rensa"
+                type="outline"
+                onClick={ console.log('Rensa') }
+            />
         </form>
     );
 };
