@@ -1,5 +1,7 @@
 # Individuell examination – Shui
 
+[Inspelad genomgång av examination](https://funet.sharepoint.com/:v:/s/FrontendutvecklareYH-Fe25/IQByp34iw5zLTr0lXs5mbj06AWBZael3GfRr6QTEyJx0HWw?e=Q6FVUk)
+
 ## Bakgrund
 
 Du har fått i uppdrag att vidareutveckla **Shui**, en enkel digital anslagstavla där användare kan publicera meddelanden.
