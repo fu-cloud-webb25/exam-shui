@@ -543,24 +543,7 @@ För att få **Godkänt** ska:
 
 För **Väl Godkänt** ska samtliga krav för Godkänt vara uppfyllda.
 
-Dessutom ska följande funktionalitet implementeras.
-
----
-
-## Sortering
-
-Användaren ska kunna sortera meddelanden efter datum:
-
-```text
-Nyast först
-Äldst först
-```
-
-Sorteringen ska stödjas av ditt **API och din databasfråga**.
-
-Det räcker alltså inte att hämta samtliga meddelanden och därefter enbart använda JavaScripts `sort()` i frontend.
-
-Fundera på hur din Sort Key eller ett eventuellt index kan hjälpa dig att hämta datan i rätt ordning.
+Dessutom ska följande funktionalitet implementeras:
 
 ---
 
@@ -705,7 +688,6 @@ Ditt repository ska innehålla:
 ```text
 Frontend
 Backend
-serverless.yml
 README.md
 ```
 
@@ -714,6 +696,8 @@ README ska tydligt innehålla:
 ```text
 Länk till deployad Shui-applikation
 API Base URL
+API-dokumentation
+Databasdokumentation
 ```
 
 Den deployade applikationen och API:t ska vara tillgängliga under rättningsperioden.
@@ -725,6 +709,33 @@ Kontrollera därför innan du lämnar in att:
 * frontend kan kommunicera med API:t
 * funktionaliteten fungerar från den deployade versionen och inte enbart lokalt
 
+---
+
+## Munta
+
+Fredagen den **2/10** genomförs en individuell muntlig examination (**munta**).
+
+Varje studerande har **15 minuter**. Muntan inleds med:
+
+```text
+3 minuter – Demonstration av den färdiga applikationen
+3 minuter – Demonstration av koden
+```
+
+Under de första tre minuterna visar du kort den färdiga applikationen och dess viktigaste funktioner.
+
+Därefter har du tre minuter där du visar och förklarar delar av din kod. Fokusera på lösningar och delar av koden som du tycker är särskilt viktiga för applikationen.
+
+Resterande tid kommer läraren att ställa frågor om din kod och de lösningar du har valt. Syftet är att säkerställa att du **förstår din egen kod, kan förklara hur den fungerar och kan motivera de lösningar du har valt**.
+
+Förbered dig därför väl inför muntan. Du ska kunna resonera kring både frontend, backend och databas samt förklara hur de olika delarna av applikationen fungerar tillsammans.
+
+**Tider för muntan skickas ut i början av vecka 40.**
+
+När det är din tur ska du vara **redo att börja direkt**. Ha applikationen, koden och allt annat du behöver öppet och förberett innan din tid börjar.
+
+---
+
 ## Deadline
 
-**2/10 kl. 23:59**
+**1/10 kl. 23:59**
